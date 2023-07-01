@@ -19,6 +19,8 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/ping", ping)
 
 	router.Handler(http.MethodGet, "/", app.sessionManager.LoadAndSave(noSurf(app.authenticate(http.HandlerFunc(app.home)))))
+	router.Handler(http.MethodGet, "/about", app.sessionManager.LoadAndSave(noSurf(app.authenticate(http.HandlerFunc(app.about)))))
+
 	router.Handler(http.MethodGet, "/snippet/view/:id", app.sessionManager.LoadAndSave(noSurf(app.authenticate(http.HandlerFunc(app.snippetView)))))
 	router.Handler(http.MethodGet, "/snippet/create", app.sessionManager.LoadAndSave(noSurf(app.authenticate(app.requireAuthentication(http.HandlerFunc(app.snippetCreate))))))
 	router.Handler(http.MethodPost, "/snippet/create", app.sessionManager.LoadAndSave(noSurf(app.authenticate(app.requireAuthentication(http.HandlerFunc(app.snippetCreatePost))))))
