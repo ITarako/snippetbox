@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"errors"
+	"github.com/jmoiron/sqlx"
 	"time"
 )
 
@@ -21,7 +22,7 @@ type SnippetModelInterface interface {
 }
 
 type SnippetModel struct {
-	DB *sql.DB
+	DB *sqlx.DB
 }
 
 func (m *SnippetModel) Insert(title string, content string, expires int) (int, error) {

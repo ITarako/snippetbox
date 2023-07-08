@@ -2,12 +2,12 @@ package main
 
 import (
 	"crypto/tls"
-	"database/sql"
 	"flag"
 	"github.com/alexedwards/scs/mysqlstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"html/template"
 	"log"
 	"net/http"
@@ -51,7 +51,7 @@ func main() {
 	formDecoder := form.NewDecoder()
 
 	sessionManager := scs.New()
-	sessionManager.Store = mysqlstore.New(db)
+	sessionManager.Store = mysqlstore.New(db.DB)
 	sessionManager.Lifetime = 12 * time.Hour
 	sessionManager.Cookie.Secure = true
 
@@ -85,13 +85,9 @@ func main() {
 	errorLog.Fatal(err)
 }
 
-func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("mysql", dsn)
+func openDB(dsn string) (*sqlx.DB, error) {
+	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
-		return nil, err
-	}
-
-	if err = db.Ping(); err != nil {
 		return nil, err
 	}
 

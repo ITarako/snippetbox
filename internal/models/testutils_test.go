@@ -1,13 +1,13 @@
 package models
 
 import (
-	"database/sql"
+	"github.com/jmoiron/sqlx"
 	"os"
 	"testing"
 )
 
-func newTestDB(t *testing.T) *sql.DB {
-	db, err := sql.Open("mysql", "test_web:pass@/test_snippetbox?parseTime=true&multiStatements=true")
+func newTestDB(t *testing.T) *sqlx.DB {
+	db, err := sqlx.Open("mysql", "test_web:pass@/test_snippetbox?parseTime=true&multiStatements=true")
 	if err != nil {
 		t.Fatal(err)
 	}

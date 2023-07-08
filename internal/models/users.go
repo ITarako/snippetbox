@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 	"strings"
 	"time"
@@ -25,7 +26,7 @@ type UserModelInterface interface {
 }
 
 type UserModel struct {
-	DB *sql.DB
+	DB *sqlx.DB
 }
 
 func (m *UserModel) Insert(name, email, password string) error {
