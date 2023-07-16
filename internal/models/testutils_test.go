@@ -2,12 +2,13 @@ package models
 
 import (
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"os"
 	"testing"
 )
 
 func newTestDB(t *testing.T) *sqlx.DB {
-	db, err := sqlx.Open("mysql", "test_web:pass@/test_snippetbox?parseTime=true&multiStatements=true")
+	db, err := sqlx.Open("postgres", "user=postgres password=postgres dbname=snippetbox_test sslmode=disable")
 	if err != nil {
 		t.Fatal(err)
 	}

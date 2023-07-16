@@ -3,11 +3,11 @@ package main
 import (
 	"crypto/tls"
 	"flag"
-	"github.com/alexedwards/scs/mysqlstore"
+	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"html/template"
 	"log"
 	"net/http"
@@ -29,7 +29,7 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
+	dsn := flag.String("dsn", "user=postgres password=postgres host=localhost port=5432 dbname=snippetbox sslmode=disable", "Postgres data source name")
 	debug := flag.Bool("debug", false, "Enable debug mode")
 	flag.Parse()
 
@@ -51,7 +51,7 @@ func main() {
 	formDecoder := form.NewDecoder()
 
 	sessionManager := scs.New()
-	sessionManager.Store = mysqlstore.New(db.DB)
+	sessionManager.Store = postgresstore.New(db.DB)
 	sessionManager.Lifetime = 12 * time.Hour
 	sessionManager.Cookie.Secure = true
 
@@ -86,7 +86,7 @@ func main() {
 }
 
 func openDB(dsn string) (*sqlx.DB, error) {
-	db, err := sqlx.Connect("mysql", dsn)
+	db, err := sqlx.Connect("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}
